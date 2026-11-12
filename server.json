@@ -1,0 +1,23 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.kovapdf/kovapdf",
+  "title": "KovaPDF",
+  "description": "Work on PDF files: compress, merge, split, convert, read scans, redact and check signatures.",
+  "version": "1.1.0",
+  "websiteUrl": "https://www.kovapdf.com",
+  "icons": [
+    {
+      "src": "https://www.kovapdf.com/logo-512.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "512x512"
+      ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.kovapdf.com"
+    }
+  ]
+}

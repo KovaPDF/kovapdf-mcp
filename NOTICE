@@ -1,0 +1,11 @@
+KovaPDF
+
+The MIT License in LICENSE covers the code and configuration files in this repository:
+manifests, skill and rule texts, and examples.
+
+It does not cover the KovaPDF name, logo, icons, images, fonts or website copy.
+Those stay the property of KovaPDF and are not licensed for reuse.
+Any icon or image file in this repository is included only so the package can show it.
+
+Using this package calls the KovaPDF service, under its terms (https://www.kovapdf.com/legal/terms)
+and privacy policy (https://www.kovapdf.com/legal/privacy).
