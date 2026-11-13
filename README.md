@@ -10,9 +10,13 @@ https://mcp.kovapdf.com
 
 It speaks streamable HTTP. Sign in is standard OAuth: the first tool call opens the KovaPDF connect page in your browser, you sign in to your KovaPDF account and choose Allow. No API key goes into any settings file. Every job uses the usual limits of the account you connect, and files and results are deleted within an hour.
 
+**You need a KovaPDF account.** A free account is enough to start ([sign up](https://www.kovapdf.com/register)). The tools on the KovaPDF website work without an account, but an assistant always works through the account you connect. The server itself is hosted by KovaPDF; it is not open source.
+
 ## Connect it
 
-**Claude (claude.ai and the desktop app):** Settings, Connectors, Add custom connector, then paste `https://mcp.kovapdf.com`.
+**Claude (claude.ai and the desktop app):** open Customize, then Connectors. Choose Add, then Add custom connector, name it KovaPDF and paste `https://mcp.kovapdf.com`. On a Team or Enterprise plan, an Owner adds it first under Organization settings, then Connectors. In a chat, choose + and then Connectors to turn KovaPDF on. Custom connectors depend on your Claude plan.
+
+**ChatGPT (web):** open Plugins, choose the + button, then Add custom MCP server. Name it KovaPDF, paste `https://mcp.kovapdf.com` as the server URL, choose OAuth, read the note, choose I understand and want to continue, then Create as a plugin. In a chat, type @ and choose KovaPDF. This option depends on your ChatGPT plan, and in a work or school workspace an admin may need to allow it.
 
 **Claude Code:**
 
@@ -67,6 +71,28 @@ Or install the plugin, which adds the server and a skill: https://github.com/Kov
 | `get_my_usage` | Tasks left on the connected account. |
 
 Files go in as a link (`url`), a small file as `base64`, or a `file_id` from an earlier upload. Results come back as short lived download links.
+
+## Example
+
+Ask your assistant:
+
+> Compress https://example.com/annual-report.pdf to under 500 KB and give me the link.
+
+It calls `compress_pdf` with arguments like these:
+
+```json
+{ "file": { "url": "https://example.com/annual-report.pdf" }, "targetKb": 500 }
+```
+
+The answer has a download link for the smaller PDF. Long jobs return a job id first; the assistant then reads the result with `get_job_result`.
+
+## Troubleshooting
+
+- **The connect page did not open.** Your client starts sign in on the first tool call. If nothing opens, look for a blocked pop up, or reconnect KovaPDF in your client's connector or MCP settings.
+- **401 or "sign in" errors.** The connection has expired or was removed. Reconnect and choose Allow again.
+- **A limit message.** Ask the assistant to run `get_my_usage`; it shows what is left on your account and when more comes back.
+- **A link could not be downloaded.** `url` must be a public https address. For a private file, attach it in the chat if your client supports that, or send a small file as `base64`.
+- **Something else.** Error codes are listed at https://www.kovapdf.com/developers/errors, and you can reach us at https://www.kovapdf.com/contact.
 
 ## Listed on
 
