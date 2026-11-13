@@ -1,0 +1,855 @@
+{
+  "identifier": "kovapdf",
+  "name": "KovaPDF",
+  "version": "1.1.0",
+  "author": "KovaPDF",
+  "authorUrl": "https://www.kovapdf.com",
+  "homepage": "https://www.kovapdf.com/mcp",
+  "cloudEndpoint": "https://mcp.kovapdf.com",
+  "category": "productivity",
+  "icon": "https://raw.githubusercontent.com/KovaPDF/kovapdf-mcp/main/assets/logo-400.png",
+  "description": "Compress, merge, split and convert PDFs, read text from scans, black out private details and check signatures, with your own KovaPDF account.",
+  "tags": [
+    "pdf",
+    "compress",
+    "merge",
+    "convert",
+    "ocr",
+    "redact",
+    "e-signature"
+  ],
+  "tools": [
+    {
+      "name": "verify_pdf_signature",
+      "description": "Checks every digital signature in a PDF: who signed, when, whether the document changed after signing, and whether the certificate is trusted. Returns a report. The file is not changed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "description": "A file id from an earlier upload, or the id of a file attached in the chat.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "url": {
+                "description": "An https link to the file. It is downloaded once, from a public address only.",
+                "type": "string",
+                "maxLength": 2000
+              },
+              "base64": {
+                "description": "A small file as standard base64, for files under 4 MB.",
+                "type": "string",
+                "maxLength": 5592414
+              },
+              "name": {
+                "description": "The file name, with its extension, when sending base64.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "download_url": {
+                "description": "Set by the chat app for an attached file.",
+                "type": "string",
+                "maxLength": 2000
+              }
+            },
+            "description": "One file: file_id, url or base64."
+          }
+        },
+        "required": [
+          "file"
+        ]
+      }
+    },
+    {
+      "name": "compress_pdf",
+      "description": "Makes a PDF smaller. Choose a level, or a target size in KB. Returns a link to the smaller PDF; the original is not changed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "description": "A file id from an earlier upload, or the id of a file attached in the chat.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "url": {
+                "description": "An https link to the file. It is downloaded once, from a public address only.",
+                "type": "string",
+                "maxLength": 2000
+              },
+              "base64": {
+                "description": "A small file as standard base64, for files under 4 MB.",
+                "type": "string",
+                "maxLength": 5592414
+              },
+              "name": {
+                "description": "The file name, with its extension, when sending base64.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "download_url": {
+                "description": "Set by the chat app for an attached file.",
+                "type": "string",
+                "maxLength": 2000
+              }
+            },
+            "description": "One file: file_id, url or base64."
+          },
+          "level": {
+            "default": "basic",
+            "description": "basic (the usual) keeps good quality, strong makes it smallest, quality changes the least.",
+            "type": "string",
+            "enum": [
+              "basic",
+              "strong",
+              "quality"
+            ]
+          },
+          "targetKb": {
+            "description": "Aim for this size in KB instead of a level.",
+            "type": "integer",
+            "minimum": 10,
+            "maximum": 50000
+          }
+        },
+        "required": [
+          "file"
+        ]
+      }
+    },
+    {
+      "name": "merge_pdfs",
+      "description": "Joins two or more PDFs into one, in the order given. Returns a link to the merged PDF.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "file_id": {
+                  "description": "A file id from an earlier upload, or the id of a file attached in the chat.",
+                  "type": "string",
+                  "maxLength": 200
+                },
+                "url": {
+                  "description": "An https link to the file. It is downloaded once, from a public address only.",
+                  "type": "string",
+                  "maxLength": 2000
+                },
+                "base64": {
+                  "description": "A small file as standard base64, for files under 4 MB.",
+                  "type": "string",
+                  "maxLength": 5592414
+                },
+                "name": {
+                  "description": "The file name, with its extension, when sending base64.",
+                  "type": "string",
+                  "maxLength": 200
+                },
+                "download_url": {
+                  "description": "Set by the chat app for an attached file.",
+                  "type": "string",
+                  "maxLength": 2000
+                }
+              },
+              "description": "One file: file_id, url or base64."
+            },
+            "description": "The files, in order."
+          }
+        },
+        "required": [
+          "files"
+        ]
+      }
+    },
+    {
+      "name": "split_pdf",
+      "description": "Splits a PDF: every page on its own (all), chosen pages into one PDF (range), every N pages (every), or into parts under a size (size). Returns a link to a PDF or a ZIP of PDFs.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "description": "A file id from an earlier upload, or the id of a file attached in the chat.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "url": {
+                "description": "An https link to the file. It is downloaded once, from a public address only.",
+                "type": "string",
+                "maxLength": 2000
+              },
+              "base64": {
+                "description": "A small file as standard base64, for files under 4 MB.",
+                "type": "string",
+                "maxLength": 5592414
+              },
+              "name": {
+                "description": "The file name, with its extension, when sending base64.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "download_url": {
+                "description": "Set by the chat app for an attached file.",
+                "type": "string",
+                "maxLength": 2000
+              }
+            },
+            "description": "One file: file_id, url or base64."
+          },
+          "mode": {
+            "default": "all",
+            "description": "all, range, every or size.",
+            "type": "string",
+            "enum": [
+              "all",
+              "range",
+              "every",
+              "size"
+            ]
+          },
+          "pages": {
+            "description": "For range: pages like 1-3,5.",
+            "type": "string",
+            "pattern": "^[0-9,\\-\\s]{1,200}$"
+          },
+          "pagesPerPart": {
+            "description": "For every: pages in each part.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "maxMb": {
+            "description": "For size: the most MB in each part.",
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 500
+          }
+        },
+        "required": [
+          "file"
+        ]
+      }
+    },
+    {
+      "name": "organize_pages",
+      "description": "Builds a new PDF from the pages listed, in that order. Each item is a page number, or { page, rotate } with rotate 90, 180 or 270. Pages left out are deleted. The original is not changed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "description": "A file id from an earlier upload, or the id of a file attached in the chat.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "url": {
+                "description": "An https link to the file. It is downloaded once, from a public address only.",
+                "type": "string",
+                "maxLength": 2000
+              },
+              "base64": {
+                "description": "A small file as standard base64, for files under 4 MB.",
+                "type": "string",
+                "maxLength": 5592414
+              },
+              "name": {
+                "description": "The file name, with its extension, when sending base64.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "download_url": {
+                "description": "Set by the chat app for an attached file.",
+                "type": "string",
+                "maxLength": 2000
+              }
+            },
+            "description": "One file: file_id, url or base64."
+          },
+          "pages": {
+            "minItems": 1,
+            "maxItems": 2000,
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "page": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 9007199254740991
+                    },
+                    "rotate": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "const": 0
+                        },
+                        {
+                          "type": "number",
+                          "const": 90
+                        },
+                        {
+                          "type": "number",
+                          "const": 180
+                        },
+                        {
+                          "type": "number",
+                          "const": 270
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "page"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "description": "The new document's pages in order: page numbers, or { page, rotate }."
+          }
+        },
+        "required": [
+          "file",
+          "pages"
+        ]
+      }
+    },
+    {
+      "name": "convert_pdf",
+      "description": "Converts a PDF to Word (word), Excel (excel) or pictures (jpg, png); or a Word, Excel, PowerPoint or OpenDocument file, or pictures, to PDF (pdf). Returns a link to the result.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "file_id": {
+                  "description": "A file id from an earlier upload, or the id of a file attached in the chat.",
+                  "type": "string",
+                  "maxLength": 200
+                },
+                "url": {
+                  "description": "An https link to the file. It is downloaded once, from a public address only.",
+                  "type": "string",
+                  "maxLength": 2000
+                },
+                "base64": {
+                  "description": "A small file as standard base64, for files under 4 MB.",
+                  "type": "string",
+                  "maxLength": 5592414
+                },
+                "name": {
+                  "description": "The file name, with its extension, when sending base64.",
+                  "type": "string",
+                  "maxLength": 200
+                },
+                "download_url": {
+                  "description": "Set by the chat app for an attached file.",
+                  "type": "string",
+                  "maxLength": 2000
+                }
+              },
+              "description": "One file: file_id, url or base64."
+            },
+            "description": "The files, in order."
+          },
+          "to": {
+            "type": "string",
+            "enum": [
+              "word",
+              "excel",
+              "jpg",
+              "png",
+              "pdf"
+            ],
+            "description": "What to make: word, excel, jpg, png or pdf."
+          },
+          "pages": {
+            "description": "For pictures: pages like 1-3.",
+            "type": "string",
+            "pattern": "^[0-9,\\-\\s]{1,200}$"
+          },
+          "dpi": {
+            "description": "For pictures: 72, 150 or 300.",
+            "anyOf": [
+              {
+                "type": "number",
+                "const": 72
+              },
+              {
+                "type": "number",
+                "const": 150
+              },
+              {
+                "type": "number",
+                "const": 300
+              }
+            ]
+          }
+        },
+        "required": [
+          "files",
+          "to"
+        ]
+      }
+    },
+    {
+      "name": "ocr_pdf",
+      "description": "Reads the text in a scanned PDF or a picture with text recognition. Returns the text and a link to a .txt file. Up to 30 pages per call; use pages to choose.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "description": "A file id from an earlier upload, or the id of a file attached in the chat.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "url": {
+                "description": "An https link to the file. It is downloaded once, from a public address only.",
+                "type": "string",
+                "maxLength": 2000
+              },
+              "base64": {
+                "description": "A small file as standard base64, for files under 4 MB.",
+                "type": "string",
+                "maxLength": 5592414
+              },
+              "name": {
+                "description": "The file name, with its extension, when sending base64.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "download_url": {
+                "description": "Set by the chat app for an attached file.",
+                "type": "string",
+                "maxLength": 2000
+              }
+            },
+            "description": "One file: file_id, url or base64."
+          },
+          "language": {
+            "description": "A language code such as eng, ben or hin; left out, it is detected.",
+            "type": "string",
+            "maxLength": 20,
+            "pattern": "^[a-z+_-]*$"
+          },
+          "pages": {
+            "description": "Pages like 1-3,5.",
+            "type": "string",
+            "pattern": "^[0-9,\\-\\s]{1,200}$"
+          }
+        },
+        "required": [
+          "file"
+        ]
+      }
+    },
+    {
+      "name": "redact_pdf",
+      "description": "Permanently removes words or kinds of details (email, phone, card, date, url, iban, ssn) from a copy of the PDF, and lists every place something was removed as proof. The original is not changed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "description": "A file id from an earlier upload, or the id of a file attached in the chat.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "url": {
+                "description": "An https link to the file. It is downloaded once, from a public address only.",
+                "type": "string",
+                "maxLength": 2000
+              },
+              "base64": {
+                "description": "A small file as standard base64, for files under 4 MB.",
+                "type": "string",
+                "maxLength": 5592414
+              },
+              "name": {
+                "description": "The file name, with its extension, when sending base64.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "download_url": {
+                "description": "Set by the chat app for an attached file.",
+                "type": "string",
+                "maxLength": 2000
+              }
+            },
+            "description": "One file: file_id, url or base64."
+          },
+          "terms": {
+            "description": "Words or phrases to remove.",
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "patterns": {
+            "description": "Kinds of details to remove.",
+            "maxItems": 7,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "email",
+                "phone",
+                "card",
+                "date",
+                "url",
+                "iban",
+                "ssn"
+              ]
+            }
+          },
+          "matchCase": {
+            "description": "Match capital letters exactly.",
+            "type": "boolean"
+          },
+          "wholeWord": {
+            "description": "Match whole words only.",
+            "type": "boolean"
+          },
+          "label": {
+            "description": "Words printed in each box, such as REDACTED.",
+            "type": "string",
+            "maxLength": 60
+          }
+        },
+        "required": [
+          "file"
+        ]
+      }
+    },
+    {
+      "name": "bijoy_to_unicode",
+      "description": "Converts Bangla text typed in Bijoy (SutonnyMJ and similar fonts) to Unicode Bangla. English words are kept as they are. Pass the text, or a .txt file.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "description": "A file id from an earlier upload, or the id of a file attached in the chat.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "url": {
+                "description": "An https link to the file. It is downloaded once, from a public address only.",
+                "type": "string",
+                "maxLength": 2000
+              },
+              "base64": {
+                "description": "A small file as standard base64, for files under 4 MB.",
+                "type": "string",
+                "maxLength": 5592414
+              },
+              "name": {
+                "description": "The file name, with its extension, when sending base64.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "download_url": {
+                "description": "Set by the chat app for an attached file.",
+                "type": "string",
+                "maxLength": 2000
+              }
+            },
+            "description": "One file: file_id, url or base64."
+          },
+          "text": {
+            "description": "The text to convert.",
+            "type": "string",
+            "maxLength": 200000
+          },
+          "keepEnglish": {
+            "description": "Keep English words as they are (the usual).",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "name": "unicode_to_bijoy",
+      "description": "Converts Unicode Bangla text to Bijoy, for SutonnyMJ and similar fonts. Pass the text, or a .txt file.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "description": "A file id from an earlier upload, or the id of a file attached in the chat.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "url": {
+                "description": "An https link to the file. It is downloaded once, from a public address only.",
+                "type": "string",
+                "maxLength": 2000
+              },
+              "base64": {
+                "description": "A small file as standard base64, for files under 4 MB.",
+                "type": "string",
+                "maxLength": 5592414
+              },
+              "name": {
+                "description": "The file name, with its extension, when sending base64.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "download_url": {
+                "description": "Set by the chat app for an attached file.",
+                "type": "string",
+                "maxLength": 2000
+              }
+            },
+            "description": "One file: file_id, url or base64."
+          },
+          "text": {
+            "description": "The text to convert.",
+            "type": "string",
+            "maxLength": 200000
+          }
+        }
+      }
+    },
+    {
+      "name": "kruti_to_unicode",
+      "description": "Converts Hindi text typed in Kruti Dev to Unicode Hindi. English words are kept as they are. Pass the text, or a .txt file.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "description": "A file id from an earlier upload, or the id of a file attached in the chat.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "url": {
+                "description": "An https link to the file. It is downloaded once, from a public address only.",
+                "type": "string",
+                "maxLength": 2000
+              },
+              "base64": {
+                "description": "A small file as standard base64, for files under 4 MB.",
+                "type": "string",
+                "maxLength": 5592414
+              },
+              "name": {
+                "description": "The file name, with its extension, when sending base64.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "download_url": {
+                "description": "Set by the chat app for an attached file.",
+                "type": "string",
+                "maxLength": 2000
+              }
+            },
+            "description": "One file: file_id, url or base64."
+          },
+          "text": {
+            "description": "The text to convert.",
+            "type": "string",
+            "maxLength": 200000
+          },
+          "keepEnglish": {
+            "description": "Keep English words as they are (the usual).",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_job_result",
+      "description": "Returns the state of a job started by another KovaPDF tool and, when it is done, its download links and report.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "The job_id a tool returned."
+          }
+        },
+        "required": [
+          "job_id"
+        ]
+      }
+    },
+    {
+      "name": "get_my_usage",
+      "description": "Returns how many free tasks the connected account has left right now, and when the next one comes back. Reads only; changes nothing.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "create_signature_request_draft",
+      "description": "Prepares a request for people to sign a PDF, without sending anything. Each signer gets a signature box on the last page. Returns a draft_id and a summary of the title, the signers and their email addresses.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "description": "A file id from an earlier upload, or the id of a file attached in the chat.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "url": {
+                "description": "An https link to the file. It is downloaded once, from a public address only.",
+                "type": "string",
+                "maxLength": 2000
+              },
+              "base64": {
+                "description": "A small file as standard base64, for files under 4 MB.",
+                "type": "string",
+                "maxLength": 5592414
+              },
+              "name": {
+                "description": "The file name, with its extension, when sending base64.",
+                "type": "string",
+                "maxLength": 200
+              },
+              "download_url": {
+                "description": "Set by the chat app for an attached file.",
+                "type": "string",
+                "maxLength": 2000
+              }
+            },
+            "description": "One file: file_id, url or base64."
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 150
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "signers": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                "email": {
+                  "type": "string",
+                  "maxLength": 200,
+                  "format": "email",
+                  "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                }
+              },
+              "required": [
+                "name",
+                "email"
+              ]
+            }
+          },
+          "sequential": {
+            "description": "true: signers sign one after another, in this order.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "file",
+          "title",
+          "signers"
+        ]
+      }
+    },
+    {
+      "name": "send_signature_request",
+      "description": "Sends a prepared draft: each signer gets an email with a link to sign. Needs the draft_id and confirm set to true, which means the person has seen the draft and said to send it.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "draft_id": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "confirm": {
+            "type": "boolean",
+            "const": true,
+            "description": "Must be true: the person confirmed sending."
+          }
+        },
+        "required": [
+          "draft_id",
+          "confirm"
+        ]
+      }
+    },
+    {
+      "name": "list_signature_requests",
+      "description": "Lists the person's signature requests, newest first, with their status.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_signature_request",
+      "description": "Shows one signature request: its status and who has signed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "request_id"
+        ]
+      }
+    }
+  ]
+}
